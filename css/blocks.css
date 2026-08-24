@@ -326,9 +326,11 @@
     display:block;flex:none;max-height:none;overflow-y:auto;
     background:transparent;
     visibility:hidden;pointer-events:none;
-    /* ตอนปิด: พื้นจางออก .406s แล้วค่อยซ่อน (ค่า Apple) */
-    transition:background .406s cubic-bezier(.4,0,.6,1),
-               visibility 0s linear .406s;
+    /* ตอนปิด (วัดจาก Apple ทีละเฟรม): รายการเลื่อนขึ้น+จาง .24s ก่อน
+       แล้วพื้นแผงค่อยจางตามหลัง "ดีเลย์ .08s ยาว .406s" (จบที่ .486s)
+       สองจังหวะซ้อนนี้คือความรู้สึก "ย้อนกลับ" — ไม่ใช่ทุกอย่างวูบพร้อมกัน */
+    transition:background .406s cubic-bezier(.4,0,.6,1) .08s,
+               visibility 0s linear .486s;
   }
   .gh__state:checked ~ .gh__nav .gh__item--links{
     visibility:visible;pointer-events:auto;background:#fafafc;
@@ -341,12 +343,17 @@
   .gh__links li{
     border:0;
     opacity:0;transform:translateY(-8px);
-    /* ตอนปิด: จางออกเร็วไม่มีหน่วง */
+    /* ตอนปิด: ทุกรายการพร้อมกัน .24s จางและ "เลื่อนกลับขึ้น -8px"
+       (ย้อนทางกับตอนเปิดที่ไหลลงมา) + visibility steps(1,start) ตามค่า Apple */
+    /* ระวัง: ตอนปิดห้ามใช้ steps(1,start) กับ visibility — จะหายวับทันทีก่อนได้จาง
+       ให้ซ่อน "หลังจางจบ" (.24s) แทน ผลตาเดียวกับ Apple ที่ให้ตัวแผงเป็นคนซ่อน */
     transition:opacity .24s cubic-bezier(.4,0,.6,1),
-               transform .24s cubic-bezier(.4,0,.6,1);
+               transform .24s cubic-bezier(.4,0,.6,1),
+               visibility 0s linear .24s;
+    visibility:hidden;
   }
   .gh__state:checked ~ .gh__nav .gh__links li{
-    opacity:1;transform:translateY(0);
+    opacity:1;transform:translateY(0);visibility:visible;
     transition:opacity .24s cubic-bezier(.4,0,.6,1) var(--d,.2s),
                transform .24s cubic-bezier(.4,0,.6,1) var(--d,.2s);
   }
