@@ -1,0 +1,391 @@
+/* =========================================================
+   blocks.css — บล็อกเรียงตามลำดับบนหน้า
+   โครงหน้าอ้างอิง apple.com/th/ · ยังไม่มี JavaScript และไม่มีแอนิเมชัน
+   ========================================================= */
+
+/* ═══════════ GLOBAL HEADER — อิงสเปก globalnav ของ apple.com/th/ ═══════════
+   วัดจาก Apple: สูง 44px · rgba(250,250,252,.8) + saturate(1.8) blur(20px)
+                 ul กว้าง 996px (69% ของ 1440) จัดกึ่งกลาง · space-between
+                 ลิงก์ 12px w400 ls -0.12px · padding 8px ต่อข้าง
+   ของเรา:      ใช้ตัวแปรมืด rgba(22,22,23,.8) ให้เข้ากับแบรนด์
+                ตัวอักษร 14px ตามที่สั่งให้ใหญ่ขึ้นเล็กน้อย                     */
+.gh{position:sticky;top:0;z-index:50;isolation:isolate}
+:root{--gh-h:52px}   /* แถบสูง 52px ให้รับกับตัวอักษรเมนู 17px (Apple: 44px/12px) */
+/* กับดัก: ถ้าใส่ backdrop-filter บน .gh ตรงๆ มันจะกลายเป็น containing block
+   ทำให้เมนูโอเวอร์เลย์ position:fixed สูงแค่เท่าแถบ ไม่เต็มจอ
+   จึงย้าย blur ไปไว้บนชั้น ::before แทน ตัวแถบเองไม่มี filter          */
+.gh::before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:rgba(22,22,23,.8);
+  backdrop-filter:saturate(1.8) blur(20px);-webkit-backdrop-filter:saturate(1.8) blur(20px);
+}
+.gh__state{position:absolute;opacity:0;pointer-events:none}
+.gh__nav{width:100%;position:relative;z-index:60}
+.gh__list{
+  width:min(1010px, calc(100% - 44px));
+  margin-inline:auto;min-height:var(--gh-h);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+}
+.gh__item{display:flex;align-items:center}
+.gh__item--links{flex:1 1 auto}
+.gh__links{display:flex;align-items:center;justify-content:space-evenly;width:100%}
+
+.gh__list a,.gh__list label{
+  display:flex;align-items:center;padding-inline:8px;
+  font-size:17px;line-height:1;font-weight:600;letter-spacing:-.01em;
+  color:rgba(255,255,255,.9);white-space:nowrap;
+}
+.gh__list a:hover{color:#fff;text-decoration:none}
+.gh__item--brand a{padding-inline-start:0}
+.gh__item--brand img{height:20px;width:auto}   /* ไฟล์ต้นฉบับเป็นใบไม้เขียว+ตัวอักษรขาวอยู่แล้ว ห้ามใส่ filter */
+.gh__item--actions{gap:2px}
+.gh__icon{padding-inline:7px;height:var(--gh-h)}
+
+/* ธงเลือกภาษา — อยู่หน้าไอคอนค้นหา */
+.gh__lang{display:flex;align-items:center;gap:2px;margin-inline-end:6px}
+.gh__list .gh__flag{padding-inline:5px;height:var(--gh-h);display:flex;align-items:center;opacity:.85}
+.gh__list .gh__flag:hover{opacity:1}
+.gh__flag svg{display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.gh__icon svg{display:block}
+
+/* แฮมเบอร์เกอร์ — โผล่เฉพาะจอเล็ก · ไอคอนเป็น SVG+SMIL ใน HTML (ลอกจาก Apple)
+   ต้องเจาะจงกว่ากฎรวม .gh__list label{display:flex} ไม่งั้นจะโผล่บนเดสก์ท็อป */
+.gh__list .gh__burger{display:none;cursor:pointer}
+.gh__burger svg{display:block}
+
+
+/* ═══════════ แผงค้นหา — สเปกวัดจาก apple.com/th/ ═══════════
+   panel  : rgba(250,250,252,.8)
+   input  : 24px / lh 24px / weight 600 / สี rgb(51,51,54)
+   ลิงก์ด่วน (หัวข้อ): 12px / lh 16px / weight 400 / สี #6E6E73
+   รายการ : weight 600 สี rgb(51,51,54) ระยะห่างบรรทัด 28px
+   ม่าน   : rgba(232,232,237,.4) + blur(20px)  (Apple เรียก globalnav-curtain)
+   ทั้งหมดสลับด้วย checkbox + :checked — ไม่มี JavaScript                  */
+.gh__search{
+  position:absolute;top:100%;left:0;width:100%;z-index:55;
+  /* ผลลัพธ์ที่เห็นบน apple.com: ตัวกล่องค้นหาเป็น "พื้นเรียบทึบ"
+     มองไม่เห็นภาพเบลอทะลุขึ้นมาเลย — ความเบลออยู่เฉพาะนอกกล่องเท่านั้น
+     (ค่าที่ประกาศไว้คือ .8 แต่ Apple ซ้อนหลายชั้นจนทึบสนิท
+      เราใช้สีทึบตรงๆ ให้ได้ผลตาเดียวกันและคุมง่ายกว่า)                  */
+  background:#fafafc;
+  /* เอฟเฟกต์เปิด/ปิดของ Apple: ยืดความสูง 0.24s cubic-bezier(.4,0,.6,1)
+     animate height:auto ตรงๆ ไม่ได้ จึงใช้ท่า grid-template-rows 0fr → 1fr
+     ซึ่งให้ผลเหมือนกันและเป็น CSS ล้วน                                   */
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .24s cubic-bezier(.4,0,.6,1);
+}
+/* ชั้นตัดภาพ: ต้องไม่มี padding ของตัวเอง ไม่งั้นตอน 0fr จะยังเหลือความสูง
+   (เจอจริงตอนทดสอบ — แผงปิดแล้วยังสูง 63px เพราะ padding ของลูก) */
+.gh__search-clip{overflow:hidden;min-height:0;padding:0;border-bottom:0 solid rgba(0,0,0,.08)}
+/* เปิดเมื่อมีโฟกัสข้างใน (ทำงานแม้ปิด JS) หรือเมื่อ JS ตั้งสถานะเปิด */
+.gh:has(.gh__search:focus-within) .gh__search,
+.gh.is-search-open .gh__search{grid-template-rows:1fr}
+.gh:has(.gh__search:focus-within) .gh__search-clip,
+.gh.is-search-open .gh__search-clip{border-bottom-width:1px}
+.gh__search-inner{
+  width:min(1010px, calc(100% - 44px));margin-inline:auto;padding:28px 0 34px;
+}
+.gh__search-form{display:flex;align-items:center;gap:12px}
+.gh__search-glass{flex:none;color:#6e6e73}
+.gh__search input{
+  flex:1;border:0;background:transparent;outline:none;padding:6px 0;
+  font-family:inherit;font-size:26px;line-height:1.15;font-weight:600;color:#333336;
+}
+.gh__search input::placeholder{color:#86868b;opacity:1}
+.gh__search input{caret-color:#333336}
+.gh__searchbtn{cursor:text}
+.gh__qlabel{margin-top:26px;font-size:14px;line-height:18px;font-weight:400;color:#6e6e73}
+.gh__quick{margin-top:10px}
+.gh__quick li{margin-bottom:8px}
+
+/* ═ ไล่เฟดรายการในกล่องค้นหา — ลอกจาก keyframe "globalnav-search-fade-and-slide" ของ Apple ═
+   วัดจริง: 0% {opacity:0; translateY(-4px)} → 100% {opacity:1; translateY(0)}
+            ยาว .32s · cubic-bezier(.4,0,.6,1) · fill-mode both
+            หัวข้อ "ลิงก์ด่วน" หน่วง .20s · รายการไล่ทีละ +20ms → .22 .24 .26 .28 .30s
+   สถานะปิด: ซ่อนไว้ที่ opacity 0 / -4px (ไม่เล่น animation) เพื่อให้กดเปิดครั้งต่อไปเริ่มใหม่ทุกครั้ง */
+@keyframes gh-search-fade-and-slide{
+  0%  {opacity:0;transform:translateY(-4px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+.gh__qlabel,.gh__quick li{opacity:0;transform:translateY(-4px)}
+.gh:has(.gh__search:focus-within) .gh__qlabel,
+.gh.is-search-open .gh__qlabel,
+.gh:has(.gh__search:focus-within) .gh__quick li,
+.gh.is-search-open .gh__quick li{
+  animation:gh-search-fade-and-slide .32s cubic-bezier(.4,0,.6,1) both;
+}
+.gh:has(.gh__search:focus-within) .gh__qlabel,
+.gh.is-search-open .gh__qlabel{animation-delay:.20s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(1),.gh.is-search-open .gh__quick li:nth-child(1){animation-delay:.22s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(2),.gh.is-search-open .gh__quick li:nth-child(2){animation-delay:.24s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(3),.gh.is-search-open .gh__quick li:nth-child(3){animation-delay:.26s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(4),.gh.is-search-open .gh__quick li:nth-child(4){animation-delay:.28s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(5),.gh.is-search-open .gh__quick li:nth-child(5){animation-delay:.30s}
+.gh:has(.gh__search:focus-within) .gh__quick li:nth-child(6),.gh.is-search-open .gh__quick li:nth-child(6){animation-delay:.32s}
+/* hover ของลิงก์ด่วน — วัดจาก .globalnav-searchresults-list-link ของ Apple
+   ปกติ : โปร่ง · ตัวอักษร #333336 · ลูกศร fill #6E6E73 · padding 4px 8px · radius 5px
+           ลิงก์กว้างเต็มคอลัมน์ (996px) จึงเห็นเป็นแถบเต็มความกว้าง
+   hover: พื้น rgb(245,245,247) · ตัวอักษรและลูกศรเป็น #000 · ไม่ขีดเส้นใต้
+   transition .02s cubic-bezier(.4,0,.6,1) — สั้นจนเกือบทันที               */
+.gh__quick a{
+  display:flex;align-items:center;gap:12px;
+  padding:4px 8px;margin-inline-start:-8px;border-radius:5px;
+  font-size:15px;line-height:18px;font-weight:600;color:#333336;
+  transition:color .02s cubic-bezier(.4,0,.6,1),background-color .02s cubic-bezier(.4,0,.6,1);
+}
+.gh__quick a::before{
+  content:'\2192';color:#6e6e73;font-weight:400;
+  transition:color .02s cubic-bezier(.4,0,.6,1);
+}
+.gh__quick a:hover,.gh__quick a:focus-visible{background:#f5f5f7;color:#000;text-decoration:none}
+.gh__quick a:hover::before,.gh__quick a:focus-visible::before{color:#000}
+.gh__quick a:focus-visible{outline:2px solid #0071e3;outline-offset:1px}
+
+/* ม่านเบลอคลุมหน้าที่เหลือ + กดเพื่อปิด */
+.gh__curtain{
+  /* ม่านต้องเริ่ม "ใต้แถบ header" เท่านั้น — ห้ามทับ header และกล่องค้นหาเด็ดขาด
+     (เคยใช้ inset:0 แล้วพื้นหลัง header ซึ่งอยู่ชั้น ::before z-index:-1
+      ถูกม่านย้อมจนทั้งแถบดูจางไปหมด) */
+  position:fixed;left:0;right:0;top:var(--gh-h);bottom:0;z-index:45;
+  background:rgba(232,232,237,.4);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  visibility:hidden;opacity:0;cursor:default;
+  /* ═ จังหวะของ Apple วัดจริงทีละเฟรม — ต่างกันที่ทิศทาง ═
+     ตอน "ปิด": visibility steps(1)        → ยังมองเห็นตลอดที่ค่อยๆ จาง แล้วค่อยซ่อนตอนจบ
+     ตอน "เปิด": visibility steps(1,start) → โผล่ทันทีที่ 80ms แล้วค่อยๆ ชัดขึ้น .32s
+     ถ้าใช้ค่าตอนปิดกับทั้งสองทิศ ม่านจะซ่อนจนครบ 400ms แล้วโผล่พรวดทีเดียว
+     = ความรู้สึก "2 จังหวะ" ที่ผิดจาก Apple
+     CSS ใช้ transition ของ "สถานะปลายทาง" จึงต้องประกาศแยกคนละบล็อก      */
+  transition:opacity .32s cubic-bezier(.4,0,.6,1) .08s,
+             visibility .32s steps(1) .08s;              /* ← ใช้ตอนปิด */
+}
+.gh:has(.gh__search:focus-within) .gh__curtain,
+.gh.is-search-open .gh__curtain{
+  visibility:visible;opacity:1;
+  transition:opacity .32s cubic-bezier(.4,0,.6,1) .08s,
+             visibility .32s steps(1,start) .08s;        /* ← ใช้ตอนเปิด */
+}
+
+/* ผู้ใช้ที่ขอลดการเคลื่อนไหว → ตัด transition ทิ้ง */
+@media (prefers-reduced-motion:reduce){
+  .gh__search,.gh__curtain{transition:none}
+  .gh__qlabel,.gh__quick li{animation:none !important;opacity:1;transform:none}
+}
+
+/* ═══════════ แถบประกาศ — สัดส่วน promo banner ของ apple.com/th/ ═══════════
+   Apple วัดได้: สูง 46px · ตัวอักษร 14px / lh 19px / w400 · ข้อความจัดกึ่งกลาง   */
+.gb{
+  background:var(--green);color:#fff;
+  min-height:46px;display:flex;align-items:center;justify-content:center;
+  padding-inline:22px;text-align:center;
+}
+.gb__text{
+  font-size:14px;line-height:19px;font-weight:400;
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+}
+.gb__label{font-weight:600}
+.gb__sep{width:1px;height:14px;background:rgba(255,255,255,.45);display:inline-block}
+
+/* หมายเหตุ: หน้าแรกไม่มี local nav — apple.com/th/ ก็มีแค่ globalnav + promo banner
+   สไตล์ ac-localnav จะกลับมาใช้ตอนทำหน้าย่อย (หน้าหลักสูตร/หน้าบริการ) */
+
+/* ═══════════════════════════════════════════════════════════
+   ระบบ TILE — หัวใจของหน้าแรก apple.com/th/
+   hero  = tile เต็มความกว้าง สูง 692px เรียงต่อกัน
+   promo = tile ครึ่ง สูง 580px กริด 2 คอลัมน์ ช่องไฟ 12px
+   ═══════════════════════════════════════════════════════════ */
+.tiles{display:flex;flex-direction:column;gap:var(--tile-gap)}
+.tiles--hero{margin-bottom:var(--tile-gap)}
+.tiles--grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:var(--tile-gap);
+  padding-inline:var(--tile-gap);
+}
+
+.tile{
+  position:relative;overflow:hidden;background:var(--bg-alt);
+  min-height:var(--tile-full-h);
+  display:flex;flex-direction:column;align-items:center;
+  padding-top:var(--tile-pad-top);text-align:center;
+}
+.tile--half{min-height:var(--tile-half-h)}
+.tile--dark{background:var(--bg-dark);color:#f5f5f7}
+.tile--dark .tile__head,.tile--dark .tile__sub{color:#f5f5f7}
+
+/* ลิงก์คลุมทั้ง tile — Apple ทำแบบนี้เพื่อให้กดตรงไหนก็ได้ */
+.tile__link{position:absolute;inset:0;z-index:3}
+.tile__link span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.tile__media{position:absolute;inset:0;z-index:0}
+.tile__media img{width:100%;height:100%;object-fit:cover}
+/* รูปถ่ายจริงต้องมี scrim ให้ตัวอักษรอ่านออก (Apple ใช้ภาพสินค้าพื้นเรียบจึงไม่ต้อง) */
+.tile--photo .tile__media::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.70),rgba(0,0,0,.46) 34%,rgba(0,0,0,.16) 62%,rgba(0,0,0,.28));
+}
+
+.tile__content{position:relative;z-index:2;max-width:min(92%,920px);padding-inline:22px}
+/* หัวข้อภาษาไทยยาว: ถ้าต้องตัดบรรทัด ให้สองบรรทัดยาวใกล้เคียงกัน (text-wrap:balance)
+   ไม่ปล่อยให้เหลือคำเดียวโดดบรรทัดล่าง เช่น "…ในการ / ทำงาน"
+   ฟอนต์ไทยแต่ละเครื่องกว้างไม่เท่ากัน (Sukhumvit Set บน Mac กว้างกว่า) จึงพึ่ง balance แทนการล็อกบรรทัด */
+.tile__head{text-wrap:balance}
+.tile__eyebrow{
+  font-size:var(--t-small);line-height:var(--lh-small);font-weight:600;
+  letter-spacing:.02em;color:var(--green);margin-bottom:6px;
+}
+.tile--photo .tile__eyebrow{color:#b8e59a}
+.tile__head{margin:0}
+.tile__sub{margin-top:6px;color:var(--ink-soft)}
+.tile--photo .tile__head,.tile--photo .tile__sub{color:#fff;text-shadow:0 1px 20px rgba(0,0,0,.4)}
+.tile--photo .tile__sub{color:#eaeaec}
+
+/* แถวลิงก์ใต้หัวเรื่อง — Apple ใช้ลิงก์ข้อความ ไม่ใช่ปุ่ม */
+.tile__cta{
+  position:relative;z-index:4;margin-top:22px;
+  max-width:min(90%,760px);margin-inline:auto;padding-inline:22px;
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+}
+/* สเปกปุ่มวัดจาก apple.com/th/: สูง 44px · padding 11px 21px · radius 980px · 17px/20px */
+.btn{
+  display:inline-block;padding:11px 21px;border-radius:980px;border:1px solid transparent;
+  font-size:17px;line-height:20px;font-weight:400;white-space:nowrap;
+}
+.btn:hover{text-decoration:none}
+/* ปุ่มหลัก — ค่าเดียวกับ --sk-button-* ของ Apple เป๊ะ */
+.btn--primary{background:var(--btn-bg);color:var(--btn-fg);border-color:var(--btn-bg)}
+.btn--primary:hover{background:var(--btn-bg-hover);border-color:var(--btn-bg-hover);color:var(--btn-fg)}
+/* ปุ่มรอง — เส้นขอบสีลิงก์ hover แล้วเติมสีทึบแบบ Apple */
+.btn--secondary{background:transparent;color:var(--link);border-color:var(--link)}
+.btn--secondary:hover{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-fg)}
+/* ยกเว้นบน tile ที่เป็นรูปถ่าย: ตัวอักษรน้ำเงินบนภาพอ่านไม่ออก จึงใช้เส้นขาว
+   แล้ว hover ค่อยเติมน้ำเงินของ Apple เหมือนกัน */
+.tile--photo .btn--secondary,.tile--dark .btn--secondary{color:#fff;border-color:rgba(255,255,255,.75)}
+.tile--photo .btn--secondary:hover,.tile--dark .btn--secondary:hover{
+  background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-fg);
+}
+
+/* ═══════════ GLOBAL FOOTER — เลียน ac-globalfooter ═══════════ */
+.gf{
+  background:var(--bg-alt);color:var(--ink-soft);
+  font-size:var(--t-foot);line-height:var(--lh-foot);
+  padding-block:20px 48px;margin-top:var(--tile-gap);
+}
+/* สีในฟุตเตอร์ — วัดจาก ac-globalfooter ของ apple.com/th/ ตรงๆ
+   ข้อความทั่วไป rgba(0,0,0,.56) · ลิงก์ในสารบัญ rgba(0,0,0,.72)
+   ลิงก์ในบรรทัดบนสุด #0066CC + ขีดเส้นใต้ตลอดเวลา (ไม่ใช่แค่ hover) */
+.gf a{color:rgba(0,0,0,.72)}
+.gf a:hover{text-decoration:underline}
+/* footer ใช้ความกว้างเดียวกับเนื้อใน header — มาตรฐานเดียวกันทั้งเว็บ */
+.gf__inner{width:min(1010px, calc(100% - 44px));margin:0 auto}
+.gf__shop{padding-block:17px;border-bottom:1px solid var(--line);color:rgba(0,0,0,.56)}
+.gf__shop a{color:var(--link);text-decoration:underline}
+.gf__shop a:hover{color:var(--link)}
+.gf__directory{
+  /* 6 คอลัมน์ต้องพอดีความกว้าง 1010: 6×~140 + gap 5×28 */
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:20px 28px;padding-block:30px;border-bottom:1px solid var(--line);
+}
+.gf__col h3{font-size:var(--t-foot);line-height:var(--lh-foot);font-weight:600;color:var(--ink);margin-bottom:9px}
+.gf__col li{margin-bottom:7px}
+.gf__breadcrumbs{padding-block:14px;color:rgba(0,0,0,.56)}
+/* ดอกไม้หน้า "เซฟสิริ" — ท่าเดียวกับโลโก้ Apple ใน breadcrumb ของ ac-globalfooter
+   ตัดเฉพาะส่วนดอกไม้จาก logo.png ด้วย background-position (ดอกไม้อยู่ช่วง x 5–147 จาก 800
+   ตรวจแล้วเป็นสีเขียวล้วน ไม่มีขาว จึงวางบนพื้นสว่างได้)                        */
+.gf__home{display:inline-flex;align-items:center;gap:6px}
+.gf__mark{
+  display:inline-block;width:19px;height:16px;flex:none;
+  background:url("../assets/logo.png") no-repeat;   /* relative ให้ทำงานใต้ subpath ของ GitHub Pages ได้ */
+  background-size:auto 16px;background-position:-0.6px 0;
+}
+.gf__breadcrumbs ol{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.gf__breadcrumbs li:not(:last-child)::after{content:'›';margin-inline-start:6px;color:var(--ink-faint)}
+.gf__legal{
+  display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;
+  padding-top:12px;border-top:1px solid var(--line);color:rgba(0,0,0,.56);
+}
+.gf__lang{display:flex;gap:14px;margin-inline-end:auto}
+.gf__lang a[aria-current]{color:var(--ink);font-weight:600}
+.gf__legal-links{display:flex;flex-wrap:wrap;gap:8px}
+.gf__legal-links li:not(:last-child)::after{content:'|';margin-inline-start:8px;color:var(--line)}
+.gf__address{margin-top:10px;font-style:normal;line-height:1.6;color:rgba(0,0,0,.56)}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width:833px){
+  /* ═══ มือถือ: เมนูเต็มจอของ apple.com/th/ — วัด transition สถานะ "เปิด" ทีละชั้น ═══
+     แผงพื้น  .globalnav-content : background .406s cubic-bezier(.4,0,.6,1) → #fafafc
+     รายการ   .globalnav-submenu-trigger-group :
+              opacity .24s + transform .24s + visibility steps(1,start)
+              หน่วง .20 .22 .24 .26 .28s (+20ms/รายการ) · ปิด = opacity 0 translateY(-8px)
+     ม่าน     ค่าเดียวกับตอนค้นหา (.32s หน่วง .08s)
+     ไอคอน    SVG SMIL .24s (อยู่ใน HTML)
+     รายการ 28px / lh 28px / 600 / #333336 · ระยะห่าง 46px · เยื้องซ้าย 48px       */
+  .gh__list{width:calc(100% - 32px);min-height:48px}
+  .gh__list .gh__burger{display:flex}
+
+  .gh__item--links{
+    position:fixed;inset:0;z-index:60;
+    display:block;flex:none;max-height:none;overflow-y:auto;
+    background:transparent;
+    visibility:hidden;pointer-events:none;
+    /* ตอนปิด: พื้นจางออก .406s แล้วค่อยซ่อน (ค่า Apple) */
+    transition:background .406s cubic-bezier(.4,0,.6,1),
+               visibility 0s linear .406s;
+  }
+  .gh__state:checked ~ .gh__nav .gh__item--links{
+    visibility:visible;pointer-events:auto;background:#fafafc;
+    transition:background .406s cubic-bezier(.4,0,.6,1),
+               visibility 0s;
+  }
+  body:has(.gh__state:checked){overflow:hidden}
+
+  .gh__links{flex-direction:column;align-items:stretch;gap:18px;padding:92px 48px 56px}
+  .gh__links li{
+    border:0;
+    opacity:0;transform:translateY(-8px);
+    /* ตอนปิด: จางออกเร็วไม่มีหน่วง */
+    transition:opacity .24s cubic-bezier(.4,0,.6,1),
+               transform .24s cubic-bezier(.4,0,.6,1);
+  }
+  .gh__state:checked ~ .gh__nav .gh__links li{
+    opacity:1;transform:translateY(0);
+    transition:opacity .24s cubic-bezier(.4,0,.6,1) var(--d,.2s),
+               transform .24s cubic-bezier(.4,0,.6,1) var(--d,.2s);
+  }
+  .gh__links li:nth-child(1){--d:.20s}
+  .gh__links li:nth-child(2){--d:.22s}
+  .gh__links li:nth-child(3){--d:.24s}
+  .gh__links li:nth-child(4){--d:.26s}
+  .gh__links li:nth-child(5){--d:.28s}
+  .gh__links li:nth-child(6){--d:.30s}
+  .gh__links li:nth-child(7){--d:.32s}
+  .gh__list .gh__links a{
+    display:block;padding:0;
+    font-size:28px;line-height:28px;font-weight:600;letter-spacing:0;color:#333336;
+  }
+  .gh__list .gh__links a:hover{color:#000}
+
+  /* ตอนเมนูเปิด: แถบ header เปลี่ยนเป็นสีเดียวกับแผง (#fafafc) พร้อมกัน .406s แบบ Apple
+     และ "ปิด backdrop-filter" ระหว่างนั้น — ถ้าปล่อยไว้ WebKit บน iOS จะวาดขอบชั้นเบลอ
+     เป็นมุมโค้งกะพริบให้เห็นทะลุแผงที่กำลังจางเข้า (อาการที่เจอใน Simulator) */
+  .gh::before{transition:background .406s cubic-bezier(.4,0,.6,1)}
+  .gh:has(#gh-menustate:checked)::before{
+    background:#fafafc;
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+  }
+  /* ให้แผงเป็น layer ของตัวเองตั้งแต่เฟรมแรก ไม่ต้องสลับ layer กลางทาง */
+  .gh__item--links{will-change:background;transform:translateZ(0)}
+
+  /* แผงเมนู (.gh__item--links) เป็น "ลูก" ของ .gh__list — อยู่ใน stacking context
+     เดียวกับปุ่ม ดังนั้นต้องยกปุ่ม/โลโก้ให้ z-index สูงกว่าแผง (60) ภายใน context นั้น
+     ไม่ใช่ยก .gh__list ทั้งก้อน (ทำไปก็ไม่ช่วย เพราะแผงก็ถูกยกตามไปด้วย) */
+  .gh__item--brand,.gh__item--actions{position:relative;z-index:65}
+  .gh__state:checked ~ .gh__nav .gh__item--brand,
+  .gh__state:checked ~ .gh__nav .gh__item--actions a{visibility:hidden}
+  .gh__state:checked ~ .gh__nav .gh__lang{visibility:hidden}
+  .gh__state:checked ~ .gh__nav .gh__burger{color:#1d1d1f;visibility:visible}
+
+  .gh__search input{font-size:22px}
+  .gh__search-inner{width:calc(100% - 32px);padding:22px 0 28px}
+  .gb__text{font-size:13px;gap:8px}
+  .tiles--grid{grid-template-columns:1fr}
+  .gf__directory{grid-template-columns:repeat(2,1fr)}
+}

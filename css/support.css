@@ -1,0 +1,107 @@
+/* =========================================================
+   support.css — หน้า "บริการช่วยเหลือ" (/consultant/)
+   โครงและตัวเลขวัดจาก support.apple.com/th-th (24 ส.ค. 2026):
+   h1 48/64 w600 กึ่งกลาง · การ์ดลัด 334×179 radius 18 พื้น #f5f5f7
+   ไอคอน 60×60 · gap 24 · การ์ดใหญ่พื้นขาวบน section เทา h2 32/44
+   เนื้อหา 17/23 · ลิงก์น้ำเงิน 17 · หัวข้อท้าย 21/29
+   ========================================================= */
+
+/* คอนเทนเนอร์ของหน้า support — ต้อง "เท่ากับเนื้อใน header" เป๊ะ
+   วัดจาก support.apple.com ที่ 1600: โลโก้เริ่ม 310 · grid เนื้อหาเริ่ม 310 = ชิดขอบเดียวกัน
+   header ของเราใช้ width:min(1010px, calc(100% - 44px)) → เนื้อหาใช้สูตรเดียวกัน
+   และต้องล้าง padding 22px ของ .wrap ทิ้ง ไม่งั้นเหลื่อมเข้ามา 22px           */
+.sp-hero,.sp-rail,.sp-quick,.sp-programs,
+.sp-features .wrap{
+  width:min(1010px, calc(100% - 44px));max-width:none;
+  margin-inline:auto;padding-inline:0;
+}
+
+/* เมนูหน้าปัจจุบัน (แบบ Apple: จาง กดไม่ได้) */
+.gh__current{
+  display:flex;align-items:center;padding-inline:8px;
+  font-size:17px;line-height:1;font-weight:600;letter-spacing:-.01em;
+  color:rgba(255,255,255,.45);white-space:nowrap;cursor:default;
+}
+
+/* ---------- HERO ---------- */
+.sp-hero{text-align:center;padding:64px 22px 40px}
+.sp-hero__badge{
+  width:114px;height:114px;margin:0 auto 28px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;
+}
+.sp-hero h1{font-size:48px;line-height:64px;font-weight:600;color:#1d1d1f}
+.sp-hero__sub{margin-top:14px;font-size:21px;line-height:29px;color:#1d1d1f}
+
+/* ---------- แถวหมวดบริการ ---------- */
+.sp-rail{padding-block:24px 8px}
+.sp-rail ul{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:40px 64px;max-width:900px;margin:0 auto;
+}
+.sp-rail a{
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  color:#1d1d1f;font-size:17px;line-height:23px;font-weight:600;
+}
+.sp-rail a:hover{text-decoration:none;color:var(--link)}
+.sp-rail svg{width:64px;height:64px;color:#1d1d1f}
+.sp-rail a:hover svg{color:var(--link)}
+
+/* ---------- การ์ดลัด 3 ใบ ---------- */
+.sp-quick{padding-block:56px}
+.sp-quick ul{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;
+}
+.sp-quick a{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  min-height:179px;padding:28px 24px;border-radius:18px;background:#f5f5f7;
+  text-align:center;color:#1d1d1f;
+}
+.sp-quick a:hover{text-decoration:none;background:#ededf0}
+.sp-quick__icon{width:60px;height:60px;display:flex;align-items:center;justify-content:center}
+.sp-quick__icon svg{width:52px;height:52px}
+.sp-quick__icon--blue{color:#0071e3}
+.sp-quick__icon--red{color:#e30000}
+.sp-quick__icon--green{color:var(--green)}
+.sp-quick__label{font-size:17px;line-height:23px;font-weight:600}
+
+/* ---------- การ์ดใหญ่บนพื้นเทา ---------- */
+.sp-features{background:#f5f5f7;padding-block:64px}
+.sp-features .wrap{display:flex;flex-direction:column;gap:24px}
+.sp-card{
+  background:#fff;border-radius:18px;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1fr;align-items:stretch;
+}
+.sp-card__copy{padding:48px 44px;display:flex;flex-direction:column;justify-content:center}
+.sp-card h2{font-size:32px;line-height:44px;font-weight:600;color:#1d1d1f}
+.sp-card p{margin-top:14px;font-size:17px;line-height:23px;color:#1d1d1f}
+.sp-card__links{margin-top:18px}
+.sp-card__links a{font-size:17px;color:var(--link)}
+.sp-card__links a::after{content:' ›'}
+.sp-card__media{margin:0;min-height:300px}
+.sp-card__media img{width:100%;height:100%;object-fit:cover;display:block}
+/* สลับฝั่งรูปการ์ดคู่ ให้จังหวะเหมือน Apple */
+.sp-card:nth-child(even) .sp-card__media{order:-1}
+
+/* ---------- รายการลิงก์ยอดนิยม ---------- */
+.sp-programs{padding-block:64px 74px}
+.sp-programs ul,.sp-programs h2,.sp-programs__all{max-width:720px}
+.sp-programs h2{font-size:21px;line-height:29px;font-weight:600;color:#1d1d1f}
+.sp-programs ul{margin-top:16px}
+.sp-programs li{padding-block:9px;border-bottom:1px solid #d2d2d7}
+.sp-programs li:first-child{border-top:1px solid #d2d2d7}
+.sp-programs a{font-size:17px;line-height:23px;font-weight:500;color:var(--link)}
+.sp-programs__all{margin-top:18px}
+.sp-programs__all a{font-size:17px;font-weight:500;color:var(--link)}
+.sp-programs__all a::after{content:' ›'}
+
+/* ---------- responsive ---------- */
+@media (max-width:833px){
+  .sp-hero h1{font-size:32px;line-height:40px}
+  .sp-hero__sub{font-size:19px}
+  .sp-hero__badge{width:90px;height:90px}
+  .sp-rail ul{gap:28px 36px}
+  .sp-card{grid-template-columns:1fr}
+  .sp-card:nth-child(even) .sp-card__media{order:0}
+  .sp-card__media{min-height:220px}
+  .sp-card__copy{padding:32px 26px}
+  .sp-card h2{font-size:26px;line-height:34px}
+}

@@ -1,0 +1,94 @@
+/* =========================================================
+   base.css — ระบบพื้นฐาน
+   ตัวเลขตัวอักษรทั้งหมดวัดมาจาก apple.com/th/ ของจริง (23 ส.ค. 2026)
+   ========================================================= */
+
+:root{
+  /* ---------- ฟอนต์ ----------
+     Apple ใช้ "SF Pro TH" ซึ่งเป็นฟอนต์เฉพาะของ Apple เราเรียกใช้ไม่ได้
+     แต่ลำดับ fallback ของเขาชี้ไป "Sukhumvit Set" = ฟอนต์ไทยระบบของ
+     macOS/iOS อยู่แล้ว → เครื่อง Apple จึงได้หน้าตาเดียวกันโดยไม่ต้องโหลด
+     เครื่อง Windows/Android ค่อยตกไปที่ Noto Sans Thai (เว็บฟอนต์)        */
+  /* ลำดับสำคัญ: ต้องวาง "Sukhumvit Set" ก่อน -apple-system
+     ไม่งั้น iOS จะใช้ฟอนต์ไทยระบบของตัวเอง (ผ่าน -apple-system) ก่อนถึง Sukhumvit
+     ส่วน Mac Chrome ข้าม -apple-system (ไม่มีกลิฟไทย) ไปใช้ Sukhumvit → สองเครื่องเลยหน้าตาไม่เหมือนกัน
+     Sukhumvit Set คือฟอนต์ไทยที่ Apple ระบุเป็น fallback ของ SF Pro TH เอง               */
+  --font-th:"SF Pro TH","Sukhumvit Set",-apple-system,BlinkMacSystemFont,
+            "Noto Sans Thai","Helvetica Neue",Helvetica,Arial,sans-serif;
+
+  /* ---------- ขนาดตัวอักษร: คัดลอกสเกลจาก apple.com/th/ ----------
+     สังเกตกฎ letter-spacing ของไทย: ขนาดกลางใช้ค่า "บวกเล็กน้อย"
+     ต่างจากภาษาอังกฤษที่ Apple บีบเป็นลบ — เพราะสระบน/ล่างต้องการที่หายใจ */
+  --t-display-l:56px;  --lh-display-l:1.10;  --ls-display-l:-0.005em;
+  --t-display-m:40px;  --lh-display-m:1.10;  --ls-display-m:0;
+  --t-display-s:32px;  --lh-display-s:1.375; --ls-display-s:0.004em;
+  --t-title:24px;      --lh-title:1.375;     --ls-title:0.009em;
+  --t-lead:19px;       --lh-lead:1.368;      --ls-lead:0.012em;
+  --t-body:17px;       --lh-body:1.353;      --ls-body:0;
+  --t-small:14px;      --lh-small:1.286;
+  --t-foot:14px;      --lh-foot:1.357;   /* Apple จริง 12px — ผู้ใช้สั่งขยาย */
+
+  /* ---------- สี ---------- */
+  --ink:#1d1d1f;              /* เท่ากับ rgb(29,29,31) ของ Apple */
+  --ink-soft:#6e6e73;
+  --gf-text:rgba(0,0,0,.56);   /* ข้อความฟุตเตอร์ของ Apple */
+  --ink-faint:#86868b;
+  --line:#d2d2d7;
+  --bg:#ffffff;
+  --bg-alt:#f5f5f7;           /* เทาอ่อนของ Apple */
+  --bg-dark:#000000;
+  /* ---------- สีลิงก์/ปุ่ม: ใช้ค่าจาก design token ของ Apple ตรงๆ ----------
+     อ่านจาก --sk-* บน apple.com/th/ เมื่อ 24 ส.ค. 2026                      */
+  --link:#0066CC;             /* --sk-link / สีลิงก์ข้อความของ Apple */
+  --btn-bg:#0071E3;           /* --sk-button-background */
+  --btn-bg-hover:#0076DF;     /* --sk-button-background-hover */
+  --btn-fg:#ffffff;           /* --sk-button-color (hover เป็นสีเดียวกัน) */
+
+  /* เขียวแบรนด์ — เหลือใช้เฉพาะแถบประกาศ ไม่ใช้กับปุ่ม/ลิงก์แล้ว */
+  --green:#549B30;
+  --green-dark:#417726;
+
+  /* ---------- ระยะและกริดของ tile (วัดจาก apple.com/th/) ---------- */
+  --tile-gap:12px;            /* ช่องไฟระหว่าง tile และขอบจอ */
+  --tile-full-h:692px;
+  --tile-half-h:580px;
+  --tile-pad-top:56px;        /* ระยะจากขอบบน tile ถึงหัวเรื่อง */
+  --maxw:1180px;
+  --nav-h:52px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-th);
+  font-size:var(--t-body);line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+img{max-width:100%;height:auto;display:block}
+ul{margin:0;padding:0;list-style:none}
+p{margin:0}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}   /* Apple: ลิงก์ขึ้นเส้นใต้ตอน hover สีไม่เปลี่ยน */
+
+h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
+
+/* ---------- คลาสตัวอักษร ใช้แทนการตั้งขนาดมั่วในแต่ละบล็อก ---------- */
+.t-display-l{font-size:var(--t-display-l);line-height:var(--lh-display-l);letter-spacing:var(--ls-display-l);font-weight:600}
+.t-display-m{font-size:var(--t-display-m);line-height:var(--lh-display-m);letter-spacing:var(--ls-display-m);font-weight:600}
+.t-display-s{font-size:var(--t-display-s);line-height:var(--lh-display-s);letter-spacing:var(--ls-display-s);font-weight:600}
+.t-title    {font-size:var(--t-title);line-height:var(--lh-title);letter-spacing:var(--ls-title);font-weight:600}
+.t-lead     {font-size:var(--t-lead);line-height:var(--lh-lead);letter-spacing:var(--ls-lead);font-weight:400}
+.t-body     {font-size:var(--t-body);line-height:var(--lh-body)}
+.t-small    {font-size:var(--t-small);line-height:var(--lh-small)}
+
+/* ย่อขนาดหัวเรื่องบนจอเล็ก ตามที่ Apple ทำ */
+@media (max-width:1068px){
+  :root{--t-display-l:48px;--t-display-m:36px;--t-display-s:28px}
+}
+@media (max-width:734px){
+  :root{--t-display-l:32px;--lh-display-l:1.125;--t-display-m:28px;--t-display-s:24px;
+        --t-lead:17px;--t-body:16px;--tile-full-h:480px;--tile-half-h:420px;--tile-pad-top:44px}
+}
+
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
