@@ -321,20 +321,25 @@
   .gh__list{width:calc(100% - 32px);min-height:48px}
   .gh__list .gh__burger{display:flex}
 
+  /* ═ จังหวะแผงเมนู — วัดจาก .globalnav-content ของ Apple:
+       transition: height .406s cubic-bezier(.4,0,.6,1) .08s, background .406s ... .08s
+     เปิด: แผ่นคลี่ลงมา (height 0→เต็มจอ) พร้อมพื้นจางเข้า → รายการไล่เข้า .20s+
+     ปิด: รายการลอยขึ้น+จาง .24s ก่อน แล้ว "ทั้งแผ่นม้วนยุบกลับขึ้นไป" .406s หลังดีเลย์ .08s
+     = การย้อนกลับของตอนเปิดจริงๆ ไม่ใช่แค่จางหาย                              */
   .gh__item--links{
-    position:fixed;inset:0;z-index:60;
-    display:block;flex:none;max-height:none;overflow-y:auto;
+    position:fixed;top:0;left:0;right:0;height:0;z-index:60;
+    display:block;flex:none;max-height:none;overflow:hidden;
     background:transparent;
     visibility:hidden;pointer-events:none;
-    /* ตอนปิด (วัดจาก Apple ทีละเฟรม): รายการเลื่อนขึ้น+จาง .24s ก่อน
-       แล้วพื้นแผงค่อยจางตามหลัง "ดีเลย์ .08s ยาว .406s" (จบที่ .486s)
-       สองจังหวะซ้อนนี้คือความรู้สึก "ย้อนกลับ" — ไม่ใช่ทุกอย่างวูบพร้อมกัน */
-    transition:background .406s cubic-bezier(.4,0,.6,1) .08s,
+    transition:height .406s cubic-bezier(.4,0,.6,1) .08s,
+               background .406s cubic-bezier(.4,0,.6,1) .08s,
                visibility 0s linear .486s;
   }
   .gh__state:checked ~ .gh__nav .gh__item--links{
+    height:100vh;height:100dvh;overflow-y:auto;
     visibility:visible;pointer-events:auto;background:#fafafc;
-    transition:background .406s cubic-bezier(.4,0,.6,1),
+    transition:height .406s cubic-bezier(.4,0,.6,1),
+               background .406s cubic-bezier(.4,0,.6,1),
                visibility 0s;
   }
   body:has(.gh__state:checked){overflow:hidden}
