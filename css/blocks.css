@@ -320,6 +320,11 @@
      รายการ 28px / lh 28px / 600 / #333336 · ระยะห่าง 46px · เยื้องซ้าย 48px       */
   .gh__list{width:calc(100% - 32px);min-height:48px}
   .gh__list .gh__burger{display:flex}
+  /* มือถือ: ไอคอนขวาใหญ่ขึ้นเล็กน้อย (ผู้ใช้สั่ง) */
+  .gh__flag svg{width:26px;height:18px}
+  .gh__searchbtn svg{width:19px;height:19px}
+  .gh__item--actions a svg{width:19px;height:19px}
+  .gh__burger svg{width:21px;height:21px}
 
   /* ═ จังหวะแผงเมนู — วัดจาก .globalnav-content ของ Apple:
        transition: height .406s cubic-bezier(.4,0,.6,1) .08s, background .406s ... .08s
