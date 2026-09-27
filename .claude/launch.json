@@ -4,21 +4,36 @@
     {
       "name": "safeact-web",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "safeact-web", "run", "dev", "--", "--port", "5173", "--strictPort"],
+      "runtimeArgs": [
+        "--prefix",
+        "safeact-web",
+        "start"
+      ],
+      "port": 8125,
+      "url": "http://localhost:8125"
+    },
+    {
+      "name": "safeact-web (dev)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "safeact-web",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
       "port": 5173,
       "url": "http://localhost:5173"
     },
     {
-      "name": "safeact-web (production build)",
-      "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "cd safeact-web && npm run build && npx vite preview --port 4173 --strictPort"],
-      "port": 4173,
-      "url": "http://localhost:4173"
-    },
-    {
       "name": "safesiri-new",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["server.js"],
+      "runtimeArgs": [
+        "server.js"
+      ],
       "port": 8124,
       "url": "http://localhost:8124"
     }
